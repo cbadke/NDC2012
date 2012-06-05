@@ -2,7 +2,7 @@
 	var ws = new WebSocket("ws://" +location.host);
 
 	ws.onopen = function () {
-		ws.send('Hello from Remy');
+		ws.send(JSON.stringify({type:"login",message:""}));
 	};
 
 	ws.onmessage = function (e) {

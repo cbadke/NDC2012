@@ -14,12 +14,31 @@ var server = connect()
 
 ws.attach(server).on('connection', function(socket) {
 	sockets.push(socket);
-	socket.on('message', function(data) {
-		console.log('new message ' + data);
+	socket.on('message', function(rawData) {
+		console.log('new message ' + rawData);
 
-		sockets.forEach(function(socket) {
-			socket.send(data);
-		});
+		var data = JSON.parse(rawData);
+
+		if (data.type === "say"){
+			sockets.forEach(function(sock) {
+
+				if(sock !== socket) {
+					sock.send(socket.user + " - " + data.message);
+				}
+			});
+		} else if (data.type === "login"){
+			socket.user = sockets.length;
+			console.log("user logged in: " + socket.user);
+		} else if (data.type === "leave"){
+			console.log("user left: " + socket.user);
+			sockets.forEach(function(sock) {
+				if(sock !== socket) {
+					sock.send("user " + socket.user + " has left");
+				}
+			});
+			socket.close();
+		}
+
 	})
 	.on('close', function() {
 		console.log('connection closed');
