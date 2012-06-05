@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<title>Simple WS</title>
+<script>
+var ws = new WebSocket('ws://localhost:3000');
+
+ws.onopen = function () {
+  console.log('socket open');
+  ws.send('hello world');
+};
+
+ws.onmessage = function (event) {
+  console.log('message', event.data);
+};
+</script>
