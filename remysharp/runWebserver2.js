@@ -1,13 +1,20 @@
 var connect = require('connect');
+var monkey = require('./monkey');
 
 var port = process.env.PORT || 8000;
 console.log('Starting server on port ' + port);
 
 var routes = function (app) {
-	app.get('/bob', function(req, res, next) {
-		console.log('hello bob');
-		res.writeHead(200, {'content-type': 'text/html'});
-		res.end('hello bob');
+	app.get('/monkey/:action/:command', function(req, res, next) {
+		if (req.params.action === 'say') {
+			res.write(monkey.say(req.params.command));
+			res.end();
+		} else if(req.params.action === 'do') {
+			res.write(monkey.do(req.params.command));
+			res.end();
+		} else {
+			return next();
+		}
 	})
 };
 
